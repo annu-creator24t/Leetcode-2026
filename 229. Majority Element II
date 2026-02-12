@@ -50,3 +50,5 @@ class Solution {
         return result;
     }
 }
+
+Tc=O(n) ,Sc=O(1)
