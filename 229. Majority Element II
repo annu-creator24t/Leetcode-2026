@@ -1,0 +1,52 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+
+        int candidate1 = 0, candidate2 = 0;
+        int votes1 = 0, votes2 = 0;
+
+        // ----- Phase 1 : Find potential candidates -----
+        for(int num : nums) {
+
+            // exactly same style as n/2
+            if(votes1 == 0 && num != candidate2) {
+                candidate1 = num;
+            }
+            else if(votes2 == 0 && num != candidate1) {
+                candidate2 = num;
+            }
+
+            if(num == candidate1)
+                votes1++;
+
+            else if(num == candidate2)
+                votes2++;
+
+            else {
+                votes1--;
+                votes2--;
+            }
+        }
+
+        // ----- Phase 2 : Verification -----
+        votes1 = 0;
+        votes2 = 0;
+
+        for(int num : nums) {
+            if(num == candidate1) votes1++;
+            else if(num == candidate2) votes2++;
+        }
+
+        List<Integer> result = new ArrayList<>();
+
+        if(votes1 > nums.length / 3)
+            result.add(candidate1);
+
+        if(votes2 > nums.length / 3)
+            result.add(candidate2);
+
+        return result;
+    }
+}
