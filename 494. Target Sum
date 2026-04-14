@@ -1,0 +1,105 @@
+/* <---Recursion--->
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        return dfs(0, 0, nums, target);
+    }
+
+    private int dfs(int index, int sum, int[] nums, int target) {
+        if (index == nums.length) {
+            return sum == target ? 1 : 0;
+        }
+
+        int plus = dfs(index + 1, sum + nums[index], nums, target);
+        int minus = dfs(index + 1, sum - nums[index], nums, target);
+
+        return plus + minus;
+    }
+}
+ */
+
+/* <---Memoization--->
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int total = 0;
+        for (int num : nums) total += num;
+
+        Integer[][] dp = new Integer[nums.length][2 * total + 1];
+
+        return dfs(0, 0, nums, target, dp, total);
+    }
+
+    private int dfs(int i, int sum, int[] nums, int target, Integer[][] dp, int offset) {
+        if (i == nums.length) {
+            return sum == target ? 1 : 0;
+        }
+
+        if (dp[i][sum + offset] != null) return dp[i][sum + offset];
+
+        int plus = dfs(i + 1, sum + nums[i], nums, target, dp, offset);
+        int minus = dfs(i + 1, sum - nums[i], nums, target, dp, offset);
+
+        return dp[i][sum + offset] = plus + minus;
+    }
+}
+ */
+
+
+/* <---Tabulation--->
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int total = 0;
+        for (int num : nums) total += num;
+
+        if ((target + total) % 2 != 0 || target > total) return 0;
+
+        int sum = (target + total) / 2;
+
+        int n = nums.length;
+        int[][] dp = new int[n + 1][sum + 1];
+
+        dp[0][0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            for (int s = 0; s <= sum; s++) {
+
+                dp[i][s] = dp[i - 1][s];
+
+                if (s >= nums[i - 1]) {
+                    dp[i][s] += dp[i - 1][s - nums[i - 1]];
+                }
+            }
+        }
+
+        return dp[n][sum];
+    }
+} */
+
+
+ //<---Space optimization--->
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+
+        int total = 0;
+        for (int num : nums) total += num;
+
+        if (Math.abs(target) > total) return 0;
+        if ((target + total) % 2 != 0) return 0;
+
+        int sum = (target + total) / 2;
+
+        int[] dp = new int[sum + 1];
+        dp[0] = 1;
+
+        for (int num : nums) {
+            for (int s = sum; s >= num; s--) {
+                dp[s] += dp[s - num];
+            }
+        }
+
+        return dp[sum];
+    }
+}
